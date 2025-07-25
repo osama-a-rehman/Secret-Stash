@@ -1,0 +1,29 @@
+server.port: 8080
+
+app:
+  jwt:
+    expiration-in-ms: 180000
+    secret: XwBLczcLct2UhuFWfe2vM8CMVmfBPN46TwD9LhG/ZQhtuXEzjyfYuNMpWUkRoaYNEYGjDnGOaF13n92n+4ObKg==
+
+spring:
+  application.name: Secret Stash
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+  datasource:
+    url: jdbc:h2:mem:secret-stash
+    driver-class-name: org.h2.Driver
+    username: admin
+    password: password
+
+  liquibase:
+    change-log: classpath:db/db.changelog-master.xml
+    enabled: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
