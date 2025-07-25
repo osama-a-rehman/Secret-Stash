@@ -3,7 +3,7 @@
     <changeSet author="osama (generated)" id="1753395117617-1">
         <createTable tableName="users">
             <column name="id" type="VARCHAR(255)">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="CONSTRAINT_4"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
             </column>
             <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
             <column name="created_by" type="VARCHAR(255)"/>
