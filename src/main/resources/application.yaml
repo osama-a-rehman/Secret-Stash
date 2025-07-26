@@ -6,9 +6,9 @@ app:
     secret: XwBLczcLct2UhuFWfe2vM8CMVmfBPN46TwD9LhG/ZQhtuXEzjyfYuNMpWUkRoaYNEYGjDnGOaF13n92n+4ObKg==
 
   rate-limiter:
-    capacity: 10
-    replenish-rate: 1
-    replenish-in-seconds: 5
+    capacity: 50
+    replenish-rate: 10
+    replenish-in-seconds: 1
 
 spring:
   application.name: Secret Stash
