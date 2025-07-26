@@ -17,8 +17,7 @@ class NoteModel (
     @Column(name = "title")
     var title: String,
 
-    @Lob
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "TEXT")
     var content: String,
 
     @Column(name = "expiry")
