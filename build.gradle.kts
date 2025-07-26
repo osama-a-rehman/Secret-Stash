@@ -24,10 +24,15 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.liquibase:liquibase-core")
 	implementation("io.jsonwebtoken:jjwt:0.12.6")
+
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.h2database:h2")
