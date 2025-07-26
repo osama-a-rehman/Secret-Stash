@@ -29,6 +29,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.liquibase:liquibase-core")
 	implementation("io.jsonwebtoken:jjwt:0.12.6")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0")
 
 	implementation("com.bucket4j:bucket4j-core:8.0.1")
 
