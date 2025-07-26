@@ -18,10 +18,12 @@ class RateLimitingTest (
     fun `should rate limit requests after 5 requests`() {
         val user = aUser()
         repeat(5) {
+            val remaining = 5 - (it+1)
             mockMvc.get("/api/notes/latest-1000") {
                 withBodyRequest(withAuthentication(user))
             }.andExpect {
                 status { isOk() }
+                header { string("X-Rate-Limit-Remaining", remaining.toString()) }
             }
         }
 
