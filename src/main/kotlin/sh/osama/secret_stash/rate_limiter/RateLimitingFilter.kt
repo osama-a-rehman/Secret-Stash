@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import sh.osama.secret_stash.exception.dto.ExceptionMessageDTO
@@ -30,6 +31,7 @@ class RateLimitingFilter (
             val waitForRefill = probe.nanosToWaitForRefill / 1_000_000_000
             response.setHeader("Retry-After", waitForRefill.toString())
             response.setHeader("X-Rate-Limit-Remaining", "0")
+            response.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
             response.status = HttpStatus.TOO_MANY_REQUESTS.value()
             response.writer.write(objectMapper.writer().writeValueAsString(ExceptionMessageDTO("Too many requests")))
         }

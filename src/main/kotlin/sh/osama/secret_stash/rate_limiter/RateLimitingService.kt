@@ -5,6 +5,7 @@ import io.github.bucket4j.Bucket
 import io.github.bucket4j.Refill
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.util.concurrent.ConcurrentHashMap
@@ -33,11 +34,7 @@ class RateLimitingService (
     }
 
     private fun getUserKey(request: HttpServletRequest): String {
-        val authHeader = request.getHeader("Authorization") ?: request.remoteAddr
-
-        if (!authHeader.startsWith("Bearer ")) return request.remoteAddr
-
-        val token = authHeader.substring(7)
-        return token
+        val authentication = SecurityContextHolder.getContext().authentication
+        return authentication.name ?: request.remoteAddr
     }
 }
