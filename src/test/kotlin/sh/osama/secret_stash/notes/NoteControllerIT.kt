@@ -83,6 +83,48 @@ class NoteControllerIT (
     }
 
     @Test
+    fun `should not return other users' notes`() {
+        val user1 = aUser()
+        val user2 = aUser()
+        val savedNote1 = noteRepository.save(
+            NoteModel(
+                title = "User 1 note title",
+                content = "User 1 note content",
+                expiry = Instant.now().plusSeconds(1200),
+                user = user1,
+            )
+        )
+        val savedNote2 = noteRepository.save(
+            NoteModel(
+                title = "User 2 note title",
+                content = "User 2 note content",
+                expiry = Instant.now().plusSeconds(600),
+                user = user2,
+            )
+        )
+
+        mockMvc.get("/api/notes/latest-1000") {
+            withAuthentication(user1)
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.length()") { value(1) }
+            jsonPath("$[0].title") { value("User 1 note title") }
+            jsonPath("$[0].content") { value("User 1 note content") }
+            jsonPath("$[0].expiry") { value(savedNote1.expiry.toString()) }
+        }
+
+        mockMvc.get("/api/notes/latest-1000") {
+            withAuthentication(user2)
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.length()") { value(1) }
+            jsonPath("$[0].title") { value("User 2 note title") }
+            jsonPath("$[0].content") { value("User 2 note content") }
+            jsonPath("$[0].expiry") { value(savedNote2.expiry.toString()) }
+        }
+    }
+
+    @Test
     fun `should create a note`() {
         val request = CreateNoteRequest(
             title = "Test title",
