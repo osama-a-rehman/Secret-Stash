@@ -24,7 +24,8 @@
     </changeSet>
 
     <changeSet author="osama (generated)" id="1753458292333-3">
-        <createIndex indexName="idx_expiry_and_created_at" tableName="notes">
+        <createIndex indexName="idx_user_id_and_expiry_and_created_at" tableName="notes">
+            <column name="user_id"/>
             <column name="expiry"/>
             <column name="created_at"/>
         </createIndex>

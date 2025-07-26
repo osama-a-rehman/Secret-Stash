@@ -18,6 +18,7 @@ class NoteService (
 ) {
     fun getLatest1000Notes(): List<NoteDTO> {
         val page = noteRepository.findLatestNotes(
+            userService.getCurrentUser(),
             PageRequest.of(0, 1000)
         )
 
