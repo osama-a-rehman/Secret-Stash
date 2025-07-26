@@ -30,6 +30,8 @@ dependencies {
 	implementation("org.liquibase:liquibase-core")
 	implementation("io.jsonwebtoken:jjwt:0.12.6")
 
+	implementation("com.bucket4j:bucket4j-core:8.0.1")
+
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
