@@ -15,8 +15,11 @@ import org.springframework.test.web.servlet.MockHttpServletRequestDsl
 import org.springframework.test.web.servlet.MockMvc
 import sh.osama.secret_stash.config.security.service.JwtTokenService
 import sh.osama.secret_stash.helpers.anUniqueString
+import sh.osama.secret_stash.notes.model.NoteModel
+import sh.osama.secret_stash.notes.repository.NoteRepository
 import sh.osama.secret_stash.user.model.UserModel
 import sh.osama.secret_stash.user.repository.UserRepository
+import java.time.Instant
 
 @SpringBootTest
 @ExtendWith(SpringExtension::class)
@@ -34,6 +37,9 @@ abstract class IntegrationTestSetup {
     @Autowired
     protected lateinit var userRepository: UserRepository
 
+    @Autowired
+    protected lateinit var noteRepository: NoteRepository
+
     val jsonMapper = jacksonObjectMapper()
         .registerModule(JavaTimeModule())
         .registerModules(JsonNullableModule())
@@ -46,12 +52,12 @@ abstract class IntegrationTestSetup {
         content = jsonMapper.writeValueAsString(bodyRequest).replace("\r\n", "\n")
     }
 
-    protected fun MockHttpServletRequestDsl.withAuthentication(user: UserModel = aUser()) {
+    protected fun MockHttpServletRequestDsl.withAuthentication(user: UserModel = createUser()) {
         val accessToken = jwtTokenService.generateToken(username = user.username)
         header("Authorization", "Bearer $accessToken")
     }
 
-    protected fun aUser(
+    protected fun createUser(
         withUsername: String = anUniqueString("username"),
         withPassword: String = anUniqueString("password"),
         withName: String = anUniqueString("name"),
@@ -62,4 +68,20 @@ abstract class IntegrationTestSetup {
             withName = withName,
         )
     )
+
+    protected fun createNote(
+        withTitle: String = anUniqueString("title"),
+        withContent: String = anUniqueString("content"),
+        withExpiry: Instant? = null,
+        withUser: UserModel,
+    ): NoteModel = noteRepository.save(
+        sh.osama.secret_stash.helpers.aNote(
+            withTitle = withTitle,
+            withContent = withContent,
+            withExpiry = withExpiry,
+            withUser = withUser,
+        )
+    ).also {
+        noteRepository.flush()
+    }
 }

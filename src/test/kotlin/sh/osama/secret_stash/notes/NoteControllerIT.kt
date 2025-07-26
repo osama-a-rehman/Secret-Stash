@@ -3,31 +3,24 @@ package sh.osama.secret_stash.notes
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import org.openapitools.jackson.nullable.JsonNullable
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.*
 import org.springframework.transaction.annotation.Transactional
 import sh.osama.secret_stash.IntegrationTestSetup
 import sh.osama.secret_stash.notes.dto.CreateNoteRequest
 import sh.osama.secret_stash.notes.dto.EditNoteRequest
-import sh.osama.secret_stash.notes.model.NoteModel
-import sh.osama.secret_stash.notes.repository.NoteRepository
 import java.time.Instant
 
 @Transactional
-class NoteControllerIT (
-    @Autowired private val noteRepository: NoteRepository,
-) : IntegrationTestSetup() {
+class NoteControllerIT : IntegrationTestSetup() {
     @Test
     fun `should return latest 1000 notes`() {
-        val user = aUser()
-        val savedNote = noteRepository.save(
-            NoteModel(
-                title = "Test title",
-                content = "Test content",
-                expiry = Instant.now().plusSeconds(600),
-                user = user,
-            )
+        val user = createUser()
+        val savedNote = createNote(
+            withTitle = "Test title",
+            withContent = "Test content",
+            withExpiry = Instant.now().plusSeconds(600),
+            withUser = user,
         )
 
         mockMvc.get("/api/notes/latest-1000") {
@@ -43,29 +36,25 @@ class NoteControllerIT (
 
     @Test
     fun `should not return expired notes`() {
-        val user = aUser()
-        val expiredNote = noteRepository.save(
-            NoteModel(
-                title = "Note 1",
-                content = "Note 1 content",
-                expiry = Instant.now().minusSeconds(600),
-                user = user,
-            )
+        val user = createUser()
+
+        val expiredNote = createNote(
+            withTitle = "Note 1",
+            withContent = "Note 1 content",
+            withExpiry = Instant.now().minusSeconds(600),
+            withUser = user,
         )
-        val nonExpiredNote = noteRepository.save(
-            NoteModel(
-                title = "Note 2",
-                content = "Note 2 content",
-                expiry = Instant.now().plusSeconds(600),
-                user = user,
-            )
+
+        val nonExpiredNote = createNote(
+            withTitle = "Note 2",
+            withContent = "Note 2 content",
+            withExpiry = Instant.now().plusSeconds(600),
+            withUser = user,
         )
-        val noExpiryNote = noteRepository.save(
-            NoteModel(
-                title = "Note 3",
-                content = "Note 3 content",
-                user = user,
-            )
+        val noExpiryNote = createNote(
+            withTitle = "Note 3",
+            withContent = "Note 3 content",
+            withUser = user,
         )
 
         mockMvc.get("/api/notes/latest-1000") {
@@ -84,23 +73,20 @@ class NoteControllerIT (
 
     @Test
     fun `should not return other users' notes`() {
-        val user1 = aUser()
-        val user2 = aUser()
-        val savedNote1 = noteRepository.save(
-            NoteModel(
-                title = "User 1 note title",
-                content = "User 1 note content",
-                expiry = Instant.now().plusSeconds(1200),
-                user = user1,
-            )
+        val user1 = createUser()
+        val user2 = createUser()
+
+        val savedNote1 = createNote(
+            withTitle = "User 1 note title",
+            withContent = "User 1 note content",
+            withExpiry = Instant.now().plusSeconds(1200),
+            withUser = user1,
         )
-        val savedNote2 = noteRepository.save(
-            NoteModel(
-                title = "User 2 note title",
-                content = "User 2 note content",
-                expiry = Instant.now().plusSeconds(600),
-                user = user2,
-            )
+        val savedNote2 = createNote(
+            withTitle = "User 2 note title",
+            withContent = "User 2 note content",
+            withExpiry = Instant.now().plusSeconds(600),
+            withUser = user2,
         )
 
         mockMvc.get("/api/notes/latest-1000") {
@@ -145,14 +131,12 @@ class NoteControllerIT (
 
     @Test
     fun `should edit an existing note`() {
-        val user = aUser()
-        val savedNote = noteRepository.save(
-            NoteModel(
-                title = "Test title",
-                content = "Test content",
-                expiry = Instant.now().plusSeconds(600),
-                user = user,
-            )
+        val user = createUser()
+        val savedNote = createNote(
+            withTitle = "Test title",
+            withContent = "Test content",
+            withExpiry = Instant.now().plusSeconds(600),
+            withUser = user,
         )
 
         mockMvc.patch("/api/notes/${savedNote.id}") {
@@ -170,14 +154,12 @@ class NoteControllerIT (
 
     @Test
     fun `should delete an existing note`() {
-        val user = aUser()
-        val savedNote = noteRepository.save(
-            NoteModel(
-                title = "Test title",
-                content = "Test content",
-                expiry = Instant.now().plusSeconds(600),
-                user = user,
-            )
+        val user = createUser()
+        val savedNote = createNote(
+            withTitle = "Test title",
+            withContent = "Test content",
+            withExpiry = Instant.now().plusSeconds(600),
+            withUser = user,
         )
 
         mockMvc.delete("/api/notes/${savedNote.id}") {
