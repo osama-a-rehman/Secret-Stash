@@ -1,7 +1,38 @@
 
 # Secret Stash
 
-## How to run?
+## 1) Project Overview
+Secret Stash is a secure note-taking REST API built with Kotlin and Spring Boot. It allows users to register, authenticate via JWT tokens, and manage personal notes with optional expiry timestamps. Notes are private per user, and the system ensures expired notes are hidden from queries.
+
+## 2) Features
+
+- User registration and login with JWT-based authentication
+- Secure password storage (BCrypt)
+- Authentication flow with Access and refresh tokens
+- CRUD operations on notes scoped to the authenticated user
+- Expiry logic to exclude expired notes from queries
+- Rate limiting per user and on public end-points to mitigate brute-force attacks
+- API endpoint to fetch the latest 1,000 notes sorted by creation date in descending order
+
+## 3) Tech Stack and Dependencies
+The following libraries and frameworks (alongwith their purpose) were used in this project:
+- **Kotlin** – Primary programming language
+- **Spring Boot** – Application framework for building the REST API
+- **Spring Security** – Authentication
+- **JWT (jjwt)** – JSON Web Token generation
+- **Spring Data JPA** – ORM layer for database interactions
+- **Liquibase** – For database versioning
+- **H2 Database** – In-memory database for development and testing
+- **Postgres** – Persistent database for production
+- **Redis (via Jedis)** – Used for storing and managing refresh tokens and rate limiting
+- **Bucket4j** – Provides Rate Limiting algorithm and sets up Rate Limiting strategy.
+- **Swagger UI** – For API Documentation
+- **JUnit 5 & Spring Test** – Unit and integration testing
+- **MockMvc** – HTTP-level testing of controllers
+- **Strikt** – For Assertions in tests
+
+
+## 4) How to run?
 ### 1. Clone the repository:
 
      git clone https://github.com/your-username/secret-stash.git cd secret-stash  
@@ -24,24 +55,33 @@
 
        ./gradlew bootRun 
 
-## Tech Stack and Dependencies
-The following libraries and frameworks (alongwith their purpose) were used in this project:
-- **Kotlin** – Primary programming language
-- **Spring Boot** – Application framework for building the REST API
-- **Spring Security** – Authentication
-- **JWT (jjwt)** – JSON Web Token generation
-- **Spring Data JPA** – ORM layer for database interactions
-- **Liquibase** – For database versioning
-- **H2 Database** – In-memory database for development and testing
-- **Postgres** – Persistent database for production
-- **Redis (via Jedis)** – Used for storing and managing refresh tokens and rate limiting
-- **Bucket4j** – Provides Rate Limiting algorithm and sets up Rate Limiting strategy.
-- **Swagger UI** – For API Documentation
-- **JUnit 5 & Spring Test** – Unit and integration testing
-- **MockMvc** – HTTP-level testing of controllers
-- **Strikt** – For Assertions in tests
+## 5) Testing
+The project contains Unit and Integration tests to test key paths or flows such as:
+- Successful and failed login/registration
+- CRUD operations with authentication
+- Notes owned by user1 are not seen by user2
+- Expiry logic enforcement
+- Validation and error handling
 
-## Authentication Flow:
+To run tests, run the following gradle task:
+
+        ./gradlew test
+
+
+## 6) API Documentation:
+| Method | Endpoint                      | Description                                                              |  
+|--------|-------------------------------|--------------------------------------------------------------------------|  
+| POST   | `/api/notes`                    | Creates a Note                                                           |  
+| DELETE | `/api/notes/{id}`              | Deletes a Note                                                           |  
+| PATCH  | `/api/notes/{id}`              | Updates properties `title`, `content`, and `expiry` of a note            |  
+| GET    | `/api/notes/latest-1000`       | Gets latest 1000 notes                                                   |  
+| POST   | `/api/auth/register`           | Registers a user                                                         |  
+| POST   | `/api/auth/refresh-token`      | Refreshes the access token using a refresh token                         |  
+| POST   | `/api/auth/logout`             | Logs out the user by revoking the refresh token                          |  
+| POST   | `/api/auth/login`              | Logs in the user                                                         |  
+| GET    | `/api/users/profile`           | Retrieves the user profile / information                         |
+
+## 7) Authentication Flow:
 The application uses **JWT-based authentication** with support for access and refresh tokens to secure user sessions. The following endpoints are available to manage authentication:
 
 ### 1. `/api/auth/register`
@@ -92,16 +132,3 @@ The application uses **JWT-based authentication** with support for access and re
 7. **Swagger UI API documentation**: The API documentation is made available on `/swagger-ui.html` utilizing Swagger UI.
 8. **Testing**: Key functionality has been tested. The integration tests that utilizes `MockMvc` to tests end-points are contained in `AuthControllerIT.kt` and `NoteControllerIT.kt`. The unit tests that tests the functionality of NoteService and NoteRepository on a granular level are contained in `NoteServiceTest.kt` and `NoteRepositoryTest.kt` respectively. Utilizes `mockito-kotlin` for mocking, `strikt` for assertions, and `test-containers` to setup a docker container for `Redis` in the testing environment.
 9. **Request Data Validation**:  Each Request DTO being used in Controller is annotated with `@Valid` to validate it with `spring-boot-starter-validation`.
-
-## API Documentation:
-| Method | Endpoint                      | Description                                                              |  
-|--------|-------------------------------|--------------------------------------------------------------------------|  
-| POST   | `/api/notes`                    | Creates a Note                                                           |  
-| DELETE | `/api/notes/{id}`              | Deletes a Note                                                           |  
-| PATCH  | `/api/notes/{id}`              | Updates properties `title`, `content`, and `expiry` of a note            |  
-| GET    | `/api/notes/latest-1000`       | Gets latest 1000 notes                                                   |  
-| POST   | `/api/auth/register`           | Registers a user                                                         |  
-| POST   | `/api/auth/refresh-token`      | Refreshes the access token using a refresh token                         |  
-| POST   | `/api/auth/logout`             | Logs out the user by revoking the refresh token                          |  
-| POST   | `/api/auth/login`              | Logs in the user                                                         |  
-| GET    | `/api/users/profile`           | Retrieves the user profile / information                         |
