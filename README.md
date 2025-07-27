@@ -8,7 +8,11 @@
 
 ### 2. Run the application:
 #### a) In Development Envrionment:
-1. Run the application:
+1. **Start Redis Container**:
+
+        docker-compose up redis    
+
+3. **Run the application:**
 
         ./gradlew bootRun  
 
@@ -21,7 +25,7 @@
 
 ## Architectural / Design Decisions:
 1. **Monolithic architecture:** A monolithic architecture has been chosen to keep the application simple and due to time constraints. For Production, having an `api-gateway` for Rate Limiting alongwith `auth-service` and `note-service` that handles Authentication and Business Logic to separate concerns will be better.
-2. **Security**: Written `JwtService` that generates JWTs. To verify JWTs, I utilize Spring Security's Oauth resource server utility. The end-points for Authentication are part of `AuthService` which include `/login`, `/register`, `logout`, and `/refresh-token`. To refresh access tokens, `Redis` is being used.
+2. **Security**: Written `JwtService` that generates JWTs utilizing `jjwt` library. To verify JWTs, I utilize Spring Security's Oauth Resource Server utility. The end-points for Authentication are part of `AuthService` which include `/login`, `/register`, `logout`, and `/refresh-token`. To refresh access tokens, `Redis` is being used.
 3. **Database Setup**: Setup the `liquibase` based migration for easier database setup. In Development, an in-memory database `H2` is being used, in production the application can be deployed with the `postgres` database that can be run in the docker container from `docker-compose.yaml`.
 4. **Auditing with JPA**: To delegate populating `createdAt` and `lastModifiedAt` for all entities, JPA Auditing has been used in a `BaseModel`, all JPA entities extend from this model.
 5. **Redis based Rate-Limiting**: Used `Bucket4j` library with `Redis` to implement **per-user and anonymous rate limiting** via `Filter` in Spring that uses the `Token Bucket algorithm` . For production, it would be better to move Rate Limiting to the API-Gateway for better separation of concern.
@@ -43,7 +47,8 @@
    - **repository**: Interfaces with the database for CRUD operations.
    - **dto**: Defines Data Transfer Objects for request and response payloads.
 7. **Swagger UI API documentation**: The API documentation is made available on `/swagger-ui.html` utilizing Swagger UI.
-8. **Testing**: Key functionality has been tested. The integration tests that utilizes `MockMvc` to tests end-points are contained in `AuthControllerIT.kt` and `NoteControllerIT.kt`. The unit tests that tests the functionality of NoteService and NoteRepository on a granular level are contained in `NoteServiceTest.kt` and `NoteRepositoryTest.kt` respectively.
+8. **Testing**: Key functionality has been tested. The integration tests that utilizes `MockMvc` to tests end-points are contained in `AuthControllerIT.kt` and `NoteControllerIT.kt`. The unit tests that tests the functionality of NoteService and NoteRepository on a granular level are contained in `NoteServiceTest.kt` and `NoteRepositoryTest.kt` respectively. Utilizes `mockito-kotlin` for mocking, `strikt` for assertions, and `test-containers` to setup a docker container for `Redis` in the testing environment.
+9. ** Request Data Validation**:
 
 ## API Documentation:
 | Method | Endpoint                      | Description                                                              |
