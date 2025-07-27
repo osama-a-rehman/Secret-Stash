@@ -1,9 +1,12 @@
 package sh.osama.secret_stash.config.security
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -16,12 +19,16 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm.HS512
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException
+import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
+import sh.osama.secret_stash.exception.dto.ExceptionMessageDTO
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig (
-    private val userDetailsService: UserDetailsService
+    private val objectMapper: ObjectMapper,
+    private val userDetailsService: UserDetailsService,
 ) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -44,6 +51,7 @@ class SecurityConfig (
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }.oauth2ResourceServer {
                 it.jwt {  }
+                it.authenticationEntryPoint(authEntryPoint())
             }
 
         return http.build()
@@ -65,4 +73,19 @@ class SecurityConfig (
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
+
+    @Bean
+    fun authEntryPoint(): AuthenticationEntryPoint = AuthenticationEntryPoint { request, response, authException ->
+        response.status = HttpStatus.UNAUTHORIZED.value()
+
+        if (authException is InvalidBearerTokenException && authException.message?.contains("expired") == true) {
+            response.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            response.writer.write(objectMapper.writer().writeValueAsString(
+                ExceptionMessageDTO(
+                    message = "Invalid token: token expired"
+                )
+            ))
+        }
+
+    }
 }
