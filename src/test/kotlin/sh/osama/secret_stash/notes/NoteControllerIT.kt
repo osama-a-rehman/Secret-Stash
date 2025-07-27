@@ -15,7 +15,7 @@ import java.time.Instant
 @Transactional
 class NoteControllerIT : IntegrationTestSetup() {
     @Test
-    fun `should return latest 1000 notes`() {
+    fun `should return notes`() {
         val user = createUser()
         val savedNote = createNote(
             withTitle = "Test title",
@@ -32,6 +32,27 @@ class NoteControllerIT : IntegrationTestSetup() {
             jsonPath("$[0].title") { value("Test title") }
             jsonPath("$[0].content") { value("Test content") }
             jsonPath("$[0].expiry") { value(savedNote.expiry.toString()) }
+        }
+    }
+
+    @Test
+    fun `should return only 1000 notes`() {
+        val user = createUser()
+
+        repeat(1005) {
+            createNote(
+                withTitle = "Note title ${it+1}",
+                withContent = "Note content ${it+1}",
+                withExpiry = Instant.now().plusSeconds(600),
+                withUser = user,
+            )
+        }
+
+        mockMvc.get("/api/notes/latest-1000") {
+            withAuthentication(user)
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.length()") { value(1000) }
         }
     }
 
@@ -169,6 +190,29 @@ class NoteControllerIT : IntegrationTestSetup() {
             status { isOk() }
             jsonPath("$.title") { value("New title")}
             jsonPath("$.content") { value("New content") }
+        }
+    }
+
+    @Test
+    fun `should remove expiry of existing note`() {
+        val user = createUser()
+        val savedNote = createNote(
+            withTitle = "Test title",
+            withContent = "Test content",
+            withExpiry = Instant.now().plusSeconds(600),
+            withUser = user,
+        )
+
+        mockMvc.patch("/api/notes/${savedNote.id}") {
+            withAuthentication(user)
+            withBodyRequest(EditNoteRequest(
+                expiry = JsonNullable.of(null)
+            ))
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.title") { value("Test title")}
+            jsonPath("$.content") { value("Test content") }
+            jsonPath("$.expiry") { value(Matchers.nullValue()) }
         }
     }
 
