@@ -13,7 +13,7 @@ import sh.osama.secret_stash.exception.dto.ExceptionMessageDTO
 @Component
 class RateLimitingFilter (
     private val objectMapper: ObjectMapper,
-    private val rateLimitingService: RateLimitingService
+    private val rateLimitingService: IRateLimitingService
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,

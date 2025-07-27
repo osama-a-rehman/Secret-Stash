@@ -1,8 +1,9 @@
-package sh.osama.secret_stash
+package sh.osama.secret_stash.rate_limiter
 
 import org.junit.jupiter.api.Test
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.get
+import sh.osama.secret_stash.IntegrationTestSetup
 
 @TestPropertySource(properties = [
     "app.rate-limiter.capacity=5",

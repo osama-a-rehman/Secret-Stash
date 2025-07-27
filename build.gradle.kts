@@ -32,7 +32,10 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt:0.12.6")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0")
 
-	implementation("com.bucket4j:bucket4j-core:8.0.1")
+	val bucket4JVersion = "8.0.1"
+	implementation("com.bucket4j:bucket4j-core:$bucket4JVersion")
+	implementation("com.bucket4j:bucket4j-redis:$bucket4JVersion")
+	implementation("redis.clients:jedis:6.0.0")
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
@@ -47,6 +50,11 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 	testImplementation("io.strikt:strikt-core:0.35.1")
+
+	val testcontainersVersion = "1.21.3"
+	testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
+	testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
+
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

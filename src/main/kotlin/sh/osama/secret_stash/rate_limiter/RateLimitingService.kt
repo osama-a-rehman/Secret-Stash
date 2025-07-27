@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 import java.time.Duration
 import java.util.concurrent.ConcurrentHashMap
 
-@Service
+//@Service
 class RateLimitingService (
     @Value("\${app.rate-limiter.capacity:}")
     private val capacity: Long,
@@ -20,10 +20,10 @@ class RateLimitingService (
 
     @Value("\${app.rate-limiter.replenish-in-seconds:}")
     private val replenishTime: Long,
-) {
+): IRateLimitingService {
     private val buckets: MutableMap<String, Bucket> = ConcurrentHashMap()
 
-    fun getBucket(fromRequest: HttpServletRequest): Bucket =
+    override fun getBucket(fromRequest: HttpServletRequest): Bucket =
         buckets.computeIfAbsent(getUserKey(fromRequest)) { createBucket() }
 
     private fun createBucket(): Bucket {
@@ -35,6 +35,8 @@ class RateLimitingService (
 
     private fun getUserKey(request: HttpServletRequest): String {
         val authentication = SecurityContextHolder.getContext().authentication
-        return authentication.name ?: request.remoteAddr
+
+        if (authentication.name == "anonymousUser") return request.remoteAddr
+        return authentication.name
     }
 }

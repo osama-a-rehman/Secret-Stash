@@ -24,7 +24,7 @@ import java.time.Instant
 @SpringBootTest
 @ExtendWith(SpringExtension::class)
 @AutoConfigureMockMvc
-abstract class IntegrationTestSetup {
+abstract class IntegrationTestSetup : TestContainersSetup() {
     @Autowired
     protected lateinit var mockMvc: MockMvc
 
