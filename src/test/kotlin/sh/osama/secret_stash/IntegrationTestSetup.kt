@@ -57,6 +57,10 @@ abstract class IntegrationTestSetup {
         header("Authorization", "Bearer $accessToken")
     }
 
+    protected fun MockHttpServletRequestDsl.withAuthentication(accessToken: String) {
+        header("Authorization", "Bearer $accessToken")
+    }
+
     protected fun createUser(
         withUsername: String = anUniqueString("username"),
         withPassword: String = anUniqueString("password"),

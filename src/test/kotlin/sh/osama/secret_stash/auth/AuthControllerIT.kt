@@ -2,6 +2,7 @@ package sh.osama.secret_stash.auth
 
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.springframework.transaction.annotation.Transactional
 import sh.osama.secret_stash.IntegrationTestSetup
@@ -80,6 +81,20 @@ class AuthControllerIT (
         }.andExpect {
             status { isBadRequest() }
             jsonPath("$.message") { value("User already exist with username") }
+        }
+    }
+
+    @Test
+    fun `should fail access to protected end-point when JWT is expired`() {
+        val expiredToken = """
+            eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MkBnbWFpbC5jb20iLCJpYXQiOjE3NTM0NTUxNDksImV4cCI6MTc1MzQ1NTMyOX0.u2Sx-6DSsu3MO90TYvT0TyJkQkmhxDCHeUWBSVk2-jPW1-gPH34QcE4GyRAYTzriksOlgX-Hu3_UpuSHdPaFCg
+        """.trimIndent()
+
+        mockMvc.get("/api/notes/latest-1000") {
+            withAuthentication(expiredToken)
+        }.andExpect {
+            status { isUnauthorized() }
+            jsonPath("$.message") { value("Invalid token: token expired") }
         }
     }
 }
