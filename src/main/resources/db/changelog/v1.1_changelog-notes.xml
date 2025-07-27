@@ -10,10 +10,16 @@
             <column name="last_modified_at" type="TIMESTAMP WITH TIME ZONE"/>
             <column name="last_modified_by" type="VARCHAR(255)"/>
 
-            <column name="title" type="VARCHAR(255)"/>
-            <column name="content" type="TEXT"/>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
             <column name="expiry" type="TIMESTAMP WITH TIME ZONE"/>
-            <column name="user_id" type="VARCHAR(255)"/>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 
