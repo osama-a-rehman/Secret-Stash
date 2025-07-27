@@ -1,5 +1,6 @@
 package sh.osama.secret_stash.notes
 
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import org.openapitools.jackson.nullable.JsonNullable
@@ -126,6 +127,25 @@ class NoteControllerIT : IntegrationTestSetup() {
             jsonPath("$.title") { value("Test title") }
             jsonPath("$.content") { value("Test content") }
             jsonPath("$.expiry") { value(request.expiry.toString()) }
+        }
+    }
+
+    @Test
+    fun `should fail to create a note when title or content is missing`() {
+        mockMvc.post("/api/notes") {
+            withAuthentication()
+            withBodyRequest(CreateNoteRequest(title = "", content = "", expiry = null))
+        }.andExpect {
+            status { isBadRequest() }
+            jsonPath("$.message") { value("Validation errors have occurred") }
+            jsonPath("$.errors") { isArray() }
+            jsonPath("$.errors") { value(Matchers.hasSize<Any>(2)) }
+            jsonPath("$.errors[*].error") {
+                value(Matchers.containsInAnyOrder(
+                    "title: title cannot be blank",
+                    "content: content cannot be blank"
+                ))
+            }
         }
     }
 
