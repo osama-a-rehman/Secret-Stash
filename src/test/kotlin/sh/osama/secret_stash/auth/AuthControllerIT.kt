@@ -142,6 +142,13 @@ class AuthControllerIT (
     }
 
     @Test
+    fun `should fail access to protected end-point when no JWT is provided`() {
+        mockMvc.get("/api/notes/latest-1000").andExpect {
+            status { isUnauthorized() }
+        }
+    }
+
+    @Test
     fun `should fail access to protected end-point when JWT is expired`() {
         val expiredToken = """
             eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MkBnbWFpbC5jb20iLCJpYXQiOjE3NTM0NTUxNDksImV4cCI6MTc1MzQ1NTMyOX0.u2Sx-6DSsu3MO90TYvT0TyJkQkmhxDCHeUWBSVk2-jPW1-gPH34QcE4GyRAYTzriksOlgX-Hu3_UpuSHdPaFCg
