@@ -32,6 +32,15 @@ class ControllerExceptionHandler {
             HttpStatus.BAD_REQUEST
         )
 
+    @ExceptionHandler(InvalidRefreshTokenException::class)
+    fun handleInvalidRefreshTokenException(ex: InvalidRefreshTokenException): ResponseEntity<*> =
+        ResponseEntity(
+            ExceptionMessageDTO(
+                ex.message
+            ),
+            HttpStatus.BAD_REQUEST
+        )
+
     @ExceptionHandler(value = [BadCredentialsException::class])
     fun handleBadCredentialsException(ex: AuthenticationException): ResponseEntity<*> =
         ResponseEntity(

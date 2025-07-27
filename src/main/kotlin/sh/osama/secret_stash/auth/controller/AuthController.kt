@@ -5,9 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import sh.osama.secret_stash.auth.dto.LoginRequest
-import sh.osama.secret_stash.auth.dto.LoginResponse
-import sh.osama.secret_stash.auth.dto.RegisterRequest
+import sh.osama.secret_stash.auth.dto.*
 import sh.osama.secret_stash.auth.service.AuthService
 
 @RestController
@@ -20,4 +18,13 @@ class AuthController (
 
     @PostMapping("/register")
     fun register(@Valid @RequestBody request: RegisterRequest): LoginResponse = authService.register(request)
+
+    @PostMapping("/refresh-token")
+    fun refreshToken(@Valid @RequestBody request: RefreshTokenRequest): RefreshTokenResponse =
+        authService.refreshToken(request)
+
+    @PostMapping("/logout")
+    fun logout(@Valid @RequestBody request: RefreshTokenRequest) {
+        authService.logout(request)
+    }
 }

@@ -11,7 +11,7 @@ class JwtTokenService (
     @Value("\${app.jwt.secret:}")
     private val jwtSecret: String,
 
-    @Value("\${app.jwt.expiration-in-ms:}")
+    @Value("\${app.jwt.access-token.expiration-in-ms:}")
     private val jwtExpirationMs: Long,
 ) {
     fun generateToken(username: String): String {

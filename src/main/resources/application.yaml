@@ -2,7 +2,10 @@ server.port: 8080
 
 app:
   jwt:
-    expiration-in-ms: 180000
+    access-token:
+      expiration-in-ms: 180000
+    refresh-token:
+      expiration-in-ms: 86400000
     secret: XwBLczcLct2UhuFWfe2vM8CMVmfBPN46TwD9LhG/ZQhtuXEzjyfYuNMpWUkRoaYNEYGjDnGOaF13n92n+4ObKg==
 
   rate-limiter:
@@ -24,6 +27,10 @@ spring:
     driver-class-name: org.h2.Driver
     username: admin
     password: password
+
+  redis:
+    host: localhost
+    port: 6379
 
   liquibase:
     change-log: classpath:db/db.changelog-master.xml

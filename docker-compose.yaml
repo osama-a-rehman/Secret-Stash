@@ -12,6 +12,11 @@ services:
     ports:
       - "15432:5432"
 
+  redis:
+    image: redis:8.0.0-alpine
+    ports:
+      - "6379:6379"
+
 networks:
   default:
     name: secret_stash_network
