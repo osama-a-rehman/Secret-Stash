@@ -2,7 +2,10 @@ server.port: 8080
 
 app:
   jwt:
-    expiration-in-ms: 180000
+    access-token:
+      expiration-in-ms: 180000
+    refresh-token:
+      expiration-in-ms: 86400000
     secret: ${JWT_SECRET}
 
   rate-limiter:
@@ -22,6 +25,10 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
+  redis:
+    host: {REDIS_HOST}
+    port: {REDIS_PORT}
 
   liquibase:
     change-log: classpath:db/db.changelog-master.xml
