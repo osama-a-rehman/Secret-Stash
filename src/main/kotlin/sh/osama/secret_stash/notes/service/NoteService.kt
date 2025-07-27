@@ -52,7 +52,9 @@ class NoteService (
     }
 
     fun deleteNote(id: String) {
-        noteRepository.deleteById(id)
+        findNoteById(id).let {
+            noteRepository.delete(it)
+        }
     }
 
     private fun findNoteById(id: String): NoteModel =
