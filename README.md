@@ -24,6 +24,23 @@
 
        ./gradlew bootRun 
 
+## Tech Stack and Dependencies
+The following libraries and frameworks (alongwith their purpose) were used in this project:
+- **Kotlin** – Primary programming language
+- **Spring Boot** – Application framework for building the REST API
+- **Spring Security** – Authentication
+- **JWT (jjwt)** – JSON Web Token generation
+- **Spring Data JPA** – ORM layer for database interactions
+- **Liquibase** – For database versioning
+- **H2 Database** – In-memory database for development and testing
+- **Postgres** – Persistent database for production
+- **Redis (via Jedis)** – Used for storing and managing refresh tokens and rate limiting
+- **Bucket4j** – Provides Rate Limiting algorithm and sets up Rate Limiting strategy.
+- **Swagger UI** – For API Documentation
+- **JUnit 5 & Spring Test** – Unit and integration testing
+- **MockMvc** – HTTP-level testing of controllers
+- **Strikt** – For Assertions in tests
+
 ## Authentication Flow:
 The application uses **JWT-based authentication** with support for access and refresh tokens to secure user sessions. The following endpoints are available to manage authentication:
 
