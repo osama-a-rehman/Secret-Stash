@@ -1,4 +1,4 @@
-package sh.osama.secret_stash.config.security
+package sh.osama.secret_stash.config.security.service
 
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
