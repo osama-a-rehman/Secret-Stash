@@ -13,5 +13,5 @@ data class EditNoteRequest (
     @field:NotBlank(message = "cannot be blank")
     val content: JsonNullable<String> = JsonNullable.undefined(),
 
-    val expiry: JsonNullable<Instant> = JsonNullable.undefined(),
+    val expiry: JsonNullable<Instant?> = JsonNullable.undefined(),
 )
