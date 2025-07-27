@@ -42,7 +42,7 @@ class ControllerExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleEmptyBody(ex: HttpMessageNotReadableException): ResponseEntity<*> =
         ResponseEntity(
-            ExceptionMessageDTO("Request body is missing or malformed"),
+            ExceptionMessageDTO("Request body is missing or malformed: ${ex.message}"),
             HttpStatus.BAD_REQUEST
         )
 

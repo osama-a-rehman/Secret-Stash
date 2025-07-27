@@ -26,9 +26,11 @@ class NoteService (
     }
 
     fun createNote(request: CreateNoteRequest): NoteDTO = request.let {
+        val title = it.title!!; val content = it.content!!
+
         noteRepository.save(NoteModel(
-            title = it.title,
-            content = it.content,
+            title = title,
+            content = content,
             expiry = it.expiry,
             user = userService.getCurrentUser()
         )).toDTO()

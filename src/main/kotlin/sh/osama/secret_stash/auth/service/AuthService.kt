@@ -24,8 +24,10 @@ class AuthService (
     private val jwtService: JwtTokenService,
 ) {
     fun login(request: LoginRequest): LoginResponse {
+        val username = request.username!!; val password = request.password!!
+
         val authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(
-            request.username, request.password
+            username, password
         )
 
         val authentication = authenticationManager.authenticate(authenticationRequest)
@@ -42,7 +44,7 @@ class AuthService (
     }
 
     fun register(request: RegisterRequest): LoginResponse {
-        val (username, password, name) = request
+        val username = request.username!!; val password = request.password!!; val name = request.name!!
 
         if (userService.existsByUsername(request.username))
             throw EntryAlreadyExistsException("User already exist with username")

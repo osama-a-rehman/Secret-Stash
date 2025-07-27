@@ -5,9 +5,9 @@ import java.time.Instant
 
 data class CreateNoteRequest (
     @field:NotBlank(message = "title cannot be blank")
-    val title: String,
+    val title: String?,
 
     @field:NotBlank(message = "content cannot be blank")
-    val content: String,
+    val content: String?,
     val expiry: Instant?,
 )
