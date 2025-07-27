@@ -14,17 +14,18 @@ import java.time.Instant
 @Entity(name = "notes")
 @Table(name = "notes")
 class NoteModel (
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     var title: String,
 
-    @Column(name = "content", columnDefinition = "TEXT")
+    @Lob
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     var content: String,
 
     @Column(name = "expiry")
     var expiry: Instant? = null,
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     var user: UserModel,
 ) : BaseModel() {
     fun isExpired(): Boolean = expiry?.isBefore(Instant.now()) ?: false

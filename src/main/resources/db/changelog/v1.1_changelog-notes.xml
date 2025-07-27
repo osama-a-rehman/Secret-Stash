@@ -13,7 +13,7 @@
             <column name="title" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="content" type="TEXT">
+            <column name="content" type="CLOB">
                 <constraints nullable="false"/>
             </column>
             <column name="expiry" type="TIMESTAMP WITH TIME ZONE"/>

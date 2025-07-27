@@ -9,13 +9,13 @@ import sh.osama.secret_stash.user.dto.UserDTO
 @Entity(name = "users")
 @Table(name = "users")
 class UserModel (
-    @Column(name = "username", unique = true)
+    @Column(name = "username", unique = true, nullable = false)
     var username: String,
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     var password: String,
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     var name: String,
 ) : BaseModel() {
     fun toDTO(): UserDTO = UserDTO(
