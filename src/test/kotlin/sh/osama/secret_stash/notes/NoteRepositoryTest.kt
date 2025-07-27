@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.data.domain.PageRequest
+import org.springframework.transaction.annotation.Transactional
 import sh.osama.secret_stash.helpers.aNote
 import sh.osama.secret_stash.helpers.aUser
 import sh.osama.secret_stash.notes.model.NoteModel
@@ -14,6 +15,7 @@ import strikt.assertions.*
 import java.time.Instant
 
 @DataJpaTest
+@Transactional
 class NoteRepositoryTest (
     @Autowired private val noteRepository: NoteRepository,
     @Autowired private val userRepository: UserRepository,
@@ -61,6 +63,7 @@ class NoteRepositoryTest (
     private fun createNote(note: NoteModel): NoteModel {
         val savedNote = noteRepository.save(note)
         noteRepository.flush()
+        Thread.sleep(10)
 
         return savedNote
     }
